@@ -108,6 +108,30 @@ async function syncAdminProducts() {
     console.error('Не удалось загрузить товары из Supabase:', err.message);
   }
 }
+  window.ecofermerDeleteCloudProduct = async function(id) {
+  const { data: sessionData, error: sessionError } = await client.auth.getSession();
+
+  if (sessionError) throw sessionError;
+
+  const session = sessionData.session;
+
+  if (!session) {
+    throw new Error('Сначала войдите в аккаунт администратора.');
+  }
+
+  if (session.user.id !== '3d53560c-6307-40e0-bb3e-4bed7ebb1c77') {
+    throw new Error('Недостаточно прав для удаления товара.');
+  }
+
+  const { error } = await client
+    .from('products')
+    .delete()
+    .eq('id', String(id));
+
+  if (error) throw error;
+
+  return true;
+};
   function addAdminControls() {
     const form = $('#productForm');
     if (!form) return;
