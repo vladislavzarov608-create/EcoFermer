@@ -1,13 +1,3 @@
-nst products = [
- {id:1,name:"Говяжий стейк",category:"beef",label:"ГОВЯДИНА",desc:"Для сочного стейка и особенного ужина.",price:1190,unit:"кг",tag:"Выбор недели",img:"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=700&q=80"},
- {id:2,name:"Говядина для тушения",category:"beef",label:"ГОВЯДИНА",desc:"Насыщенный вкус для домашних блюд.",price:790,unit:"кг",tag:"На каждый день",img:"https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=700&q=80"},
- {id:3,name:"Свиная шея",category:"pork",label:"СВИНИНА",desc:"Отлично подходит для запекания и шашлыка.",price:690,unit:"кг",tag:"Популярное",img:"https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?auto=format&fit=crop&w=700&q=80"},
- {id:4,name:"Свиная вырезка",category:"pork",label:"СВИНИНА",desc:"Нежная часть для быстрых и вкусных блюд.",price:820,unit:"кг",tag:"",img:"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=700&q=80"},
- {id:5,name:"Баранина на кости",category:"lamb",label:"БАРАНИНА",desc:"Для ароматного рагу и традиционных рецептов.",price:980,unit:"кг",tag:"",img:"https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=700&q=80"},
- {id:6,name:"Каре ягнёнка",category:"lamb",label:"БАРАНИНА",desc:"Для праздничного стола и особых случаев.",price:1590,unit:"кг",tag:"Премиум",img:"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=700&q=80"},
- {id:7,name:"Филе куриное",category:"poultry",label:"ПТИЦА",desc:"Универсальный продукт для ежедневного меню.",price:430,unit:"кг",tag:"",img:"https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=700&q=80"},
- {id:8,name:"Бедро индейки",category:"poultry",label:"ПТИЦА",desc:"Сочное мясо для запекания и гриля.",price:570,unit:"кг",tag:"",img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=700&q=80"}
-];
 const defaultProducts = [
  {id:1,name:"Говяжий стейк",category:"beef",label:"ГОВЯДИНА",desc:"Для сочного стейка и особенного ужина.",price:1190,unit:"кг",tag:"Выбор недели",img:"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=700&q=80",stock:12,active:true},
  {id:2,name:"Говядина для тушения",category:"beef",label:"ГОВЯДИНА",desc:"Насыщенный вкус для домашних блюд.",price:790,unit:"кг",tag:"На каждый день",img:"https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=700&q=80",stock:18,active:true},
@@ -18,7 +8,11 @@ const defaultProducts = [
  {id:7,name:"Филе куриное",category:"poultry",label:"ПТИЦА",desc:"Универсальный продукт для ежедневного меню.",price:430,unit:"кг",tag:"",img:"https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=700&q=80",stock:25,active:true},
  {id:8,name:"Бедро индейки",category:"poultry",label:"ПТИЦА",desc:"Сочное мясо для запекания и гриля.",price:570,unit:"кг",tag:"",img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=700&q=80",stock:11,active:true}
 ];
-let products = JSON.parse(localStorage.getItem("ecoProducts") || "null") || defaultProducts;
+let products = JSON.parse(localStorage.getItem("ecoProducts") || "null");
+if (!Array.isArray(products) || products.length === 0) {
+  products = defaultProducts;
+  localStorage.setItem("ecoProducts", JSON.stringify(products));
+}
 let cart = JSON.parse(localStorage.getItem("farmCart") || "{}");
 let activeCategory = "all";
 const $ = s => document.querySelector(s);
