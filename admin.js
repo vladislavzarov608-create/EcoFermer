@@ -15,8 +15,8 @@ function refresh(){
 }
 function renderProducts(){
  $("#productsTable").innerHTML=products.map(p=>`<tr><td><b>${p.name}</b></td><td>${categoryNames[p.category]||p.category}</td><td>${fmt(p.price)}</td><td>${p.stock??"—"}</td><td><span class="status">${p.active===false?"Скрыт":"Опубликован"}</span></td><td><button class="action-link" data-edit="${p.id}">Изменить</button> <button class="action-link" data-delete="${p.id}">Удалить</button></td></tr>`).join("")||'<tr><td colspan="6">Товаров пока нет</td></tr>';
- document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editProduct(Number(b.dataset.edit)));
- document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{if(confirm("Удалить товар?")){products=products.filter(p=>p.id!==Number(b.dataset.delete));saveProducts();refresh();}});
+ document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editProduct(b.dataset.edit));
+ document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{if(confirm("Удалить товар?")){products=products.filter(p=>String(p.id)!==String(b.dataset.delete));saveProducts();refresh();}});
 }
 function renderOrders(){
  $("#ordersTable").innerHTML=orders.map(o=>`<tr><td><b>${o.id||"—"}</b></td><td>${new Date(o.createdAt).toLocaleString("ru-RU")}</td><td>${o.name||"—"}<br>${o.phone||""}</td><td>${o.fulfillment||"—"}<br>${o.address||""}</td><td>${(o.items||[]).map(i=>`${i.name} × ${i.qty}`).join("<br>")}</td><td><b>${fmt(o.total)}</b></td><td><select data-status="${o.id}">${["Новый","Подтверждён","Готовится","Передан в доставку","Выполнен","Отменён"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}</select></td></tr>`).join("");
@@ -28,7 +28,7 @@ function renderRecent(){
  $("#recentOrders").innerHTML=recent.length?`<div class="table-wrap"><table class="admin-table"><thead><tr><th>Номер</th><th>Покупатель</th><th>Сумма</th><th>Статус</th></tr></thead><tbody>${recent.map(o=>`<tr><td>${o.id}</td><td>${o.name||"—"}</td><td>${fmt(o.total)}</td><td><span class="status">${o.status||"Новый"}</span></td></tr>`).join("")}</tbody></table></div>`:'<p class="empty-note">Новых заказов пока нет.</p>';
 }
 function editProduct(id){
- const p=products.find(x=>x.id===id);const f=$("#productForm");f.reset();
+ const p=products.find(x=>String(x.id)===String(id));const f=$("#productForm");f.reset();
  $("#productEditor").hidden=false;$("#editorTitle").textContent=p?"Редактирование товара":"Новый товар";
  f.elements.id.value=p?.id||"";
  ["name","category","price","stock","unit","tag","desc","img"].forEach(k=>f.elements[k].value=p?.[k]??(k==="unit"?"кг":k==="stock"?0:""));
@@ -38,7 +38,7 @@ function editProduct(id){
 $("#addProduct").onclick=()=>editProduct(null);
 $("#cancelEdit").onclick=()=>$("#productEditor").hidden=true;
 $("#productForm").onsubmit=e=>{
- e.preventDefault();const f=e.target;const id=f.elements.id.value?Number(f.elements.id.value):Date.now();
+ e.preventDefault();const f=e.target;const id=f.elements.id.value?String(f.elements.id.value):String(Date.now());
  const p={id,name:f.elements.name.value.trim(),category:f.elements.category.value,label:categoryNames[f.elements.category.value].toUpperCase(),price:Number(f.elements.price.value),stock:Number(f.elements.stock.value),unit:f.elements.unit.value||"кг",tag:f.elements.tag.value,desc:f.elements.desc.value,img:f.elements.img.value||"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=700&q=80",active:f.elements.active.checked};
  const i=products.findIndex(x=>x.id===id);if(i>=0)products[i]=p;else products.push(p);
  saveProducts();$("#productEditor").hidden=true;refresh();alert("Товар сохранён в этом браузере.");
