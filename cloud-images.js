@@ -22,7 +22,20 @@
   }
   client = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true } });
 
-  
+  async function getImageMap() {
+  const { data, error } = await client
+    .from('product_images')
+    .select('product_id,image_url');
+
+  if (error) throw error;
+
+  return new Map(
+    (data || []).map(row => [
+      String(row.product_id),
+      row.image_url
+    ])
+  );
+}
 async function syncStorefront() {
   if (isAdmin) return;
 
