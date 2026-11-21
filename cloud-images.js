@@ -155,6 +155,212 @@ async function syncStorefront() {
       })();
     };
   }
+function addMigrationControls() {
+  const settings = $('#settings');
+  if (!settings) return;
 
-  if (isAdmin) addAdminControls(); else syncStorefront();
+  const panel = document.createElement('div');
+  panel.className = 'panel';
+  panel.style.marginTop = '16px';
+  panel.innerHTML = `
+    <h2>Перенос товаров в облачный каталог</h2>
+    <p>Этот инструмент перенесёт два существующих товара из браузера в общую базу Supabase.</p>
+
+    <div style="display:grid;gap:10px;max-width:500px">
+      <label>Email администратора
+        <input id="ecoMigrationEmail" type="email" autocomplete="username" placeholder="Email Supabase">
+      </label>
+      <label>Пароль администратора
+        <input id="ecoMigrationPassword" type="password" autocomplete="current-password" placeholder="Пароль Supabase">
+      </label>
+      <button class="admin-btn" type="button" id="ecoMigrationLogin">Войти</button>
+      <button class="admin-btn" type="button" id="ecoMigrationRun" disabled>
+        Перенести 2 товара в Supabase
+      </button>
+    </div>
+
+    <p id="ecoMigrationStatus" style="margin-top:12px">Проверка локальных товаров...</p>
+    <ul id="ecoMigrationPreview"></ul>
+    <button class="action-link" type="button" id="ecoMigrationLogout" hidden>Выйти</button>
+  `;
+
+  settings.append(panel);
+
+  const status = $('#ecoMigrationStatus', panel);
+  const preview = $('#ecoMigrationPreview', panel);
+  const loginButton = $('#ecoMigrationLogin', panel);
+  const runButton = $('#ecoMigrationRun', panel);
+  const logoutButton = $('#ecoMigrationLogout', panel);
+  const emailInput = $('#ecoMigrationEmail', panel);
+  const passwordInput = $('#ecoMigrationPassword', panel);
+
+  function getLocalProducts() {
+    try {
+      const raw = localStorage.getItem('ecoProducts');
+      if (!raw) return null;
+
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function showPreview() {
+    const localProducts = getLocalProducts();
+    preview.innerHTML = '';
+
+    if (!localProducts) {
+      say(status, 'Локальный каталог не найден или имеет неверный формат.', true);
+      return;
+    }
+
+    if (localProducts.length !== 2) {
+      say(status, `Найдено товаров: ${localProducts.length}. Для безопасности перенос остановлен: ожидалось ровно 2 товара.`, true);
+      return;
+    }
+
+    localProducts.forEach(product => {
+      const item = document.createElement('li');
+      item.textContent = product.name || 'Товар без названия';
+      preview.append(item);
+    });
+
+    say(status, 'Найдены ровно два товара. Проверь список перед переносом.');
+  }
+
+  async function refreshAuth() {
+    const { data, error } = await client.auth.getSession();
+
+    if (error) {
+      say(status, error.message, true);
+      return;
+    }
+
+    const session = data.session;
+    const signedIn = !!session;
+
+    loginButton.hidden = signedIn;
+    emailInput.hidden = signedIn;
+    passwordInput.hidden = signedIn;
+    logoutButton.hidden = !signedIn;
+    runButton.disabled = !signedIn;
+
+    if (signedIn) {
+      say(status, `Вход выполнен: ${session.user.email}. Проверь список товаров.`);
+    }
+
+    showPreview();
+  }
+
+  loginButton.onclick = async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      say(status, 'Введи email и пароль администратора.', true);
+      return;
+    }
+
+    loginButton.disabled = true;
+
+    const { error } = await client.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    loginButton.disabled = false;
+
+    if (error) {
+      say(status, `Ошибка входа: ${error.message}`, true);
+      return;
+    }
+
+    await refreshAuth();
+  };
+
+  logoutButton.onclick = async () => {
+    const { error } = await client.auth.signOut();
+
+    if (error) {
+      say(status, error.message, true);
+      return;
+    }
+
+    await refreshAuth();
+  };
+
+  runButton.onclick = async () => {
+    runButton.disabled = true;
+
+    try {
+      const { data: sessionData, error: sessionError } =
+        await client.auth.getSession();
+
+      if (sessionError) throw sessionError;
+
+      const session = sessionData.session;
+
+      if (!session || session.user.id !== '3d53560c-6307-40e0-bb3e-4bed7ebb1c77') {
+        throw new Error('Войди под учётной записью владельца магазина.');
+      }
+
+      const localProducts = getLocalProducts();
+
+      if (!localProducts || localProducts.length !== 2) {
+        throw new Error(
+          `Перенос отменён. Найдено товаров: ${localProducts ? localProducts.length : 0}. Ожидалось ровно 2.`
+        );
+      }
+
+      const names = localProducts.map(p => p.name || 'Без названия');
+
+      if (!confirm(
+        `Перенести в Supabase именно эти два товара?\n\n1. ${names[0]}\n2. ${names[1]}\n\nЛокальные данные останутся без изменений.`
+      )) {
+        say(status, 'Перенос отменён. Данные не изменены.');
+        return;
+      }
+
+      say(status, 'Подготавливаем товары и фотографии...');
+
+      const imageMap = await getImageMap();
+
+      const rows = localProducts.map(p => ({
+        id: String(p.id),
+        name: p.name,
+        description: p.desc || p.description || '',
+        price: Number(p.price) || 0,
+        image_url: imageMap.get(String(p.id)) || p.img || p.image_url || null,
+        category: p.category || '',
+        unit: p.unit || 'кг',
+        stock: Number(p.stock) || 0,
+        is_active: p.active !== false,
+        tag: p.tag || '',
+        updated_at: new Date().toISOString()
+      }));
+
+      const { error } = await client
+        .from('products')
+        .upsert(rows, { onConflict: 'id' });
+
+      if (error) throw error;
+
+      say(status, 'Успех! Ровно два товара перенесены в Supabase. Локальные данные сохранены.');
+    } catch (err) {
+      say(status, `Перенос не выполнен: ${err.message}`, true);
+    } finally {
+      runButton.disabled = false;
+    }
+  };
+
+  showPreview();
+  refreshAuth();
+}
+  if (isAdmin) {
+  addAdminControls();
+  addMigrationControls();
+} else {
+  syncStorefront();
+}
 })();
