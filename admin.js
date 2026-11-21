@@ -16,7 +16,27 @@ function refresh(){
 function renderProducts(){
  $("#productsTable").innerHTML=products.map(p=>`<tr><td><b>${p.name}</b></td><td>${categoryNames[p.category]||p.category}</td><td>${fmt(p.price)}</td><td>${p.stock??"—"}</td><td><span class="status">${p.active===false?"Скрыт":"Опубликован"}</span></td><td><button class="action-link" data-edit="${p.id}">Изменить</button> <button class="action-link" data-delete="${p.id}">Удалить</button></td></tr>`).join("")||'<tr><td colspan="6">Товаров пока нет</td></tr>';
  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editProduct(b.dataset.edit));
- document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{if(confirm("Удалить товар?")){products=products.filter(p=>String(p.id)!==String(b.dataset.delete));saveProducts();refresh();}});
+ document.querySelectorAll("[data-delete]").forEach(b => {
+  b.onclick = async () => {
+    if (!confirm("Удалить товар? Это действие удалит его из облачного каталога.")) return;
+
+    try {
+      if (typeof window.ecofermerDeleteCloudProduct !== 'function') {
+        throw new Error('Функция облачного удаления не найдена. Обновите страницу.');
+      }
+
+      await window.ecofermerDeleteCloudProduct(b.dataset.delete);
+
+      products = products.filter(p => String(p.id) !== String(b.dataset.delete));
+      saveProducts();
+      refresh();
+
+      alert('Товар успешно удалён из облачного каталога.');
+    } catch (err) {
+      alert('Не удалось удалить товар: ' + err.message);
+    }
+  };
+});
 }
 function renderOrders(){
  $("#ordersTable").innerHTML=orders.map(o=>`<tr><td><b>${o.id||"—"}</b></td><td>${new Date(o.createdAt).toLocaleString("ru-RU")}</td><td>${o.name||"—"}<br>${o.phone||""}</td><td>${o.fulfillment||"—"}<br>${o.address||""}</td><td>${(o.items||[]).map(i=>`${i.name} × ${i.qty}`).join("<br>")}</td><td><b>${fmt(o.total)}</b></td><td><select data-status="${o.id}">${["Новый","Подтверждён","Готовится","Передан в доставку","Выполнен","Отменён"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}</select></td></tr>`).join("");
