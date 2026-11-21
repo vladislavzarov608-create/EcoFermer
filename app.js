@@ -51,4 +51,16 @@ $("#checkoutForm").addEventListener("submit",e=>{
  toast("Демонстрационный заказ сформирован. Подключите сервер для приёма заказов.");
 });
 $("#menuToggle").onclick=()=>$(".main-nav").classList.toggle("show");
-renderProducts();renderCart();
+window.applyCloudImageMap = function(map) {
+  products.forEach(product => {
+    const cloudUrl = map.get(String(product.id));
+    if (cloudUrl) {
+      product.img = cloudUrl;
+    }
+  });
+
+  renderProducts();
+};
+
+renderProducts();
+renderCart();
