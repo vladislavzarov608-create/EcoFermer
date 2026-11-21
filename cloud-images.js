@@ -127,7 +127,7 @@ async function syncStorefront() {
       const file = fileInput.files?.[0];
       const { data: sessionData } = await client.auth.getSession();
       const session = sessionData.session;
-      if (file && !session) return say(status, 'Сначала войди в аккаунт администратора.', true);
+      if (!session) return say(status, 'Сначала войди в аккаунт администратора, чтобы сохранить товар в облаке.', true);
       if (file && (file.size > 5 * 1024 * 1024 || !['image/jpeg','image/png','image/webp'].includes(file.type))) return say(status, 'Недопустимый формат или размер файла (максимум 5 МБ).', true);
       if (submit) submit.disabled = true;
       try {
@@ -147,9 +147,28 @@ async function syncStorefront() {
           const { error } = await client.from('product_images').upsert({ product_id: String(productId), image_url: form.elements.img.value.trim(), storage_path: '', updated_at: new Date().toISOString() });
           if (error) throw error;
         }
+        const productRow = {
+  id: String(productId),
+  name: form.elements.name.value.trim(),
+  description: form.elements.desc.value.trim(),
+  price: Number(form.elements.price.value) || 0,
+  image_url: form.elements.img.value.trim() || null,
+  category: form.elements.category.value,
+  unit: form.elements.unit.value || 'кг',
+  stock: Number(form.elements.stock.value) || 0,
+  is_active: form.elements.active.checked,
+  tag: form.elements.tag.value.trim(),
+  updated_at: new Date().toISOString()
+};
+
+const { error: productError } = await client
+  .from('products')
+  .upsert(productRow, { onConflict: 'id' });
+
+if (productError) throw productError;
         if (typeof originalSubmit === 'function') originalSubmit.call(form, { preventDefault() {}, target: form });
         fileInput.value = ''; preview.style.display = 'none';
-        if (file) say(status, 'Готово! Фотография сохранена и доступна покупателям после обновления витрины.');
+        say(status, 'Товар сохранён в Supabase и административной панели.');
       } catch (err) { say(status, `Не удалось сохранить фото: ${err.message}`, true); }
       finally { if (submit) submit.disabled = false; }
       })();
