@@ -316,7 +316,7 @@ function addMigrationControls() {
       const names = localProducts.map(p => p.name || 'Без названия');
 
       if (!confirm(
-        `Перенести в Supabase именно эти три товара?\n\n1. ${names[0]}\n2. ${names[1]}\n\nЛокальные данные останутся без изменений.`
+        `Перенести в Supabase именно эти три товара?\n\n1. ${names[0]}\n2. ${names[1]}\n3. ${names[2]}\n\nЛокальные данные останутся без изменений.`
       )) {
         say(status, 'Перенос отменён. Данные не изменены.');
         return;
