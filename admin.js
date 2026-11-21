@@ -41,7 +41,7 @@ $("#productForm").onsubmit=e=>{
  e.preventDefault();const f=e.target;const id=f.elements.id.value?String(f.elements.id.value):String(Date.now());
  const p={id,name:f.elements.name.value.trim(),category:f.elements.category.value,label:categoryNames[f.elements.category.value].toUpperCase(),price:Number(f.elements.price.value),stock:Number(f.elements.stock.value),unit:f.elements.unit.value||"кг",tag:f.elements.tag.value,desc:f.elements.desc.value,img:f.elements.img.value||"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=700&q=80",active:f.elements.active.checked};
  const i=products.findIndex(x=>x.id===id);if(i>=0)products[i]=p;else products.push(p);
- saveProducts();$("#productEditor").hidden=true;refresh();alert("Товар сохранён в этом браузере.");
+ saveProducts();$("#productEditor").hidden=true;refresh();alert("Товар сохранён в административной панели и отправлен в облачный каталог.");
 };
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".admin-section").forEach(x=>x.classList.toggle("active",x.id===b.dataset.tab));});
 $("#resetDemo").onclick=()=>{if(confirm("Удалить локальные товары и заказы?")){localStorage.removeItem("ecoProducts");localStorage.removeItem("ecoOrders");refresh();}};
