@@ -8,7 +8,7 @@ const defaultProducts = [
  {id:7,name:"Филе куриное",category:"poultry",label:"ПТИЦА",desc:"Универсальный продукт для ежедневного меню.",price:430,unit:"кг",tag:"",img:"https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=700&q=80",stock:25,active:true},
  {id:8,name:"Бедро индейки",category:"poultry",label:"ПТИЦА",desc:"Сочное мясо для запекания и гриля.",price:570,unit:"кг",tag:"",img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=700&q=80",stock:11,active:true}
 ];
-let products = JSON.parse(localStorage.getItem("ecoProducts") || "null") || defaultProducts;
+let products = JSON.parse(localStorage.getItem("ecoProducts") || "null") || [];
 let cart = JSON.parse(localStorage.getItem("farmCart") || "{}");
 let activeCategory = "all";
 const $ = s => document.querySelector(s);
@@ -18,11 +18,11 @@ function renderProducts(){
  const allCount = document.querySelector('[data-category="all"] span');
 if(allCount) allCount.textContent = products.filter(p=>p.active!==false).length;
  $("#productGrid").innerHTML = shown.map(p=>`<article class="product-card"><div class="product-image" style="background-image:url('${p.img}')">${p.tag?`<span class="product-tag">${p.tag}</span>`:""}</div><div class="product-info"><span class="product-category">${p.label}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="product-bottom"><span class="price">${money(p.price)} <small>/ ${p.unit}</small></span><button class="add-btn" data-add="${p.id}" aria-label="Добавить ${p.name}">+</button></div></div></article>`).join("");
- document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>addToCart(Number(b.dataset.add))));
+ document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>addToCart(b.dataset.add)));
 }
 function addToCart(id){cart[id]=(cart[id]||0)+1;saveCart();toast("Добавлено в корзину");}
 function saveCart(){localStorage.setItem("farmCart",JSON.stringify(cart));renderCart();}
-function cartEntries(){return Object.entries(cart).filter(([id,q])=>q>0).map(([id,q])=>({product:products.find(p=>p.id===Number(id)),qty:q})).filter(x=>x.product);}
+function cartEntries(){return Object.entries(cart).filter(([id,q])=>q>0).map(([id,q])=>({product:products.find(p=>String(p.id)===String(id)),qty:q})).filter(x=>x.product);}
 function total(){return cartEntries().reduce((s,x)=>s+x.product.price*x.qty,0);}
 function renderCart(){
  const entries=cartEntries(), count=entries.reduce((s,x)=>s+x.qty,0);
