@@ -196,6 +196,11 @@ async function syncAdminProducts() {
       if (submit) submit.disabled = true;
       try {
         const productId = form.elements.id.value || String(Date.now());
+        console.log('ECOFERMER SAVE DEBUG', {
+  productId,
+  imageUrl: form.elements.img.value,
+  sessionUser: session.user.id
+});
         form.elements.id.value = productId;
         if (file) {
           const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
