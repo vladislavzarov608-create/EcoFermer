@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Экофермер — административная панель</title><link rel="stylesheet" href="styles.css">
+<style>
+.admin-body{background:#f3f1ea;min-height:100vh}.admin-top{background:#24382d;color:#fff;padding:18px 4%;display:flex;justify-content:space-between;align-items:center}.admin-top .brand{color:#fff}.admin-top .brand-copy small{color:#c7cbbf}.admin-top a{color:#e6e0d3;text-decoration:none;font-size:11px}.admin-layout{display:grid;grid-template-columns:225px 1fr;max-width:1440px;margin:auto;min-height:calc(100vh - 76px)}.admin-side{background:#e9e5db;padding:25px 16px}.admin-side button{display:flex;gap:11px;align-items:center;width:100%;text-align:left;border:0;background:transparent;padding:13px 12px;color:#596056;font:600 11px Manrope;cursor:pointer;border-radius:5px;margin-bottom:4px}.admin-side button.active,.admin-side button:hover{background:#24382d;color:white}.admin-main{padding:34px 4% 60px;min-width:0}.admin-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.admin-heading h1{font:32px "Playfair Display";color:#24382d;margin:0}.admin-heading p{font-size:10px;color:#828378}.admin-btn{border:0;background:#24382d;color:#fff;padding:12px 16px;font:700 10px Manrope;cursor:pointer}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}.stat{background:#fff;border:1px solid #e8e3d9;padding:18px}.stat span{font-size:9px;color:#818378}.stat b{display:block;font:26px "Playfair Display";color:#24382d;margin-top:8px}.panel{background:#fff;border:1px solid #e8e3d9;padding:20px;margin-bottom:18px}.panel h2{font:21px "Playfair Display";color:#24382d;margin:0 0 17px}.admin-table{width:100%;border-collapse:collapse;font-size:10px}.admin-table th{text-align:left;color:#8b8c81;font-weight:600;background:#f7f5ef}.admin-table th,.admin-table td{padding:12px 10px;border-bottom:1px solid #eeeae2;vertical-align:middle}.admin-table td{color:#4d554b}.admin-table input,.admin-table select,.edit-form input,.edit-form select,.edit-form textarea{border:1px solid #ded9cf;padding:9px;font:10px Manrope;width:100%;background:#fff}.status{display:inline-block;padding:5px 8px;background:#f1eadb;color:#876b43;font-size:9px}.action-link{border:0;background:none;color:#9b5038;cursor:pointer;font:700 10px Manrope}.empty-note{font-size:11px;color:#888}.admin-section{display:none}.admin-section.active{display:block}.edit-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.edit-form label{font-size:10px;color:#5c6258;display:flex;flex-direction:column;gap:6px}.edit-form .wide{grid-column:1/-1}.edit-form textarea{min-height:65px}.form-actions{display:flex;gap:9px;grid-column:1/-1}.secondary-btn{background:#e9e5db;color:#344536}.notice{background:#f8f1df;padding:12px 14px;font-size:10px;color:#806b43;line-height:1.6;margin-bottom:18px}.mobile-nav{display:none}
+@media(max-width:800px){.admin-layout{grid-template-columns:1fr}.admin-side{display:flex;overflow:auto;padding:8px}.admin-side button{white-space:nowrap;width:auto;margin:0}.admin-main{padding:24px 4%}.stats{grid-template-columns:repeat(2,1fr)}.admin-heading{align-items:flex-start;gap:12px;flex-direction:column}.admin-table{min-width:720px}.table-wrap{overflow:auto}.edit-form{grid-template-columns:1fr}.edit-form .wide,.form-actions{grid-column:auto}.admin-top{padding:15px 4%}}
+</style>
+</head>
+<body class="admin-body">
+<header class="admin-top"><a class="brand" href="index.html"><span class="brand-mark">Э</span><span class="brand-copy"><strong>ЭКОФЕРМЕР</strong><small>АДМИНИСТРАТИВНАЯ ПАНЕЛЬ</small></span></a><a href="index.html">← Перейти в магазин</a></header>
+<div class="admin-layout">
+<aside class="admin-side">
+<button class="active" data-tab="overview">▦ Обзор</button><button data-tab="products">▣ Товары</button><button data-tab="orders">▤ Заказы</button><button data-tab="settings">⚙ Настройки</button>
+</aside>
+<main class="admin-main">
+<section class="admin-section active" id="overview">
+<div class="admin-heading"><div><h1>Добро пожаловать!</h1><p>Краткая сводка по вашему магазину</p></div><span class="status">Демо-режим</span></div>
+<div class="notice"><b>Важно:</b> эта административная панель сохраняет данные в браузере на этом устройстве. Для совместной работы с покупателями, защищённого входа и получения заказов из интернета потребуется серверная часть и база данных.</div>
+<div class="stats"><div class="stat"><span>Всего товаров</span><b id="statProducts">0</b></div><div class="stat"><span>Заказов</span><b id="statOrders">0</b></div><div class="stat"><span>Новых заказов</span><b id="statNew">0</b></div><div class="stat"><span>Сумма заказов</span><b id="statRevenue">0 ₽</b></div></div>
+<div class="panel"><h2>Последние заказы</h2><div id="recentOrders"></div></div>
+</section>
+<section class="admin-section" id="products">
+<div class="admin-heading"><div><h1>Товары</h1><p>Управляйте ассортиментом, ценами и наличием</p></div><button class="admin-btn" id="addProduct">+ Добавить товар</button></div>
+<div class="panel"><div class="table-wrap"><table class="admin-table"><thead><tr><th>Название</th><th>Категория</th><th>Цена / кг</th><th>Остаток, кг</th><th>Витрина</th><th>Действия</th></tr></thead><tbody id="productsTable"></tbody></table></div></div>
+<div class="panel" id="productEditor" hidden><h2 id="editorTitle">Новый товар</h2><form class="edit-form" id="productForm">
+<input type="hidden" name="id">
+<label>Название товара<input name="name" required></label>
+<label>Категория<select name="category"><option value="beef">Говядина</option><option value="pork">Свинина</option><option value="lamb">Баранина</option><option value="poultry">Птица</option></select></label>
+<label>Цена за кг, ₽<input name="price" type="number" min="1" required></label>
+<label>Остаток, кг<input name="stock" type="number" min="0" step="0.1" value="0"></label>
+<label>Единица измерения<input name="unit" value="кг"></label>
+<label>Метка на карточке<input name="tag" placeholder="Например: Новинка"></label>
+<label class="wide">Описание<textarea name="desc"></textarea></label>
+<label class="wide">Ссылка на фотографию<input name="img" type="url" placeholder="https://..."></label>
+<label><span>Показывать в магазине</span><input name="active" type="checkbox" checked style="width:auto"></label>
+<div class="form-actions"><button class="admin-btn" type="submit">Сохранить товар</button><button class="admin-btn secondary-btn" type="button" id="cancelEdit">Отмена</button></div>
+</form></div>
+</section>
+<section class="admin-section" id="orders">
+<div class="admin-heading"><div><h1>Заказы</h1><p>Просмотр заказов и изменение их статусов</p></div></div>
+<div class="panel"><div class="table-wrap"><table class="admin-table"><thead><tr><th>Номер</th><th>Дата</th><th>Покупатель</th><th>Получение</th><th>Состав</th><th>Сумма</th><th>Статус</th></tr></thead><tbody id="ordersTable"></tbody></table></div><p class="empty-note" id="emptyOrders">Пока заказов нет. Тестовый заказ можно оформить в магазине.</p></div>
+</section>
+<section class="admin-section" id="settings">
+<div class="admin-heading"><div><h1>Настройки</h1><p>Контактная информация и демонстрационные данные</p></div></div>
+<div class="panel"><h2>Информация о магазине</h2><div class="edit-form"><label>Название магазина<input value="Экофермер" disabled></label><label>Телефон магазина<input value="+7 (999) 000-00-00" disabled></label><label class="wide">Примечание<textarea disabled>Контакты пока демонстрационные. Для редактирования настроек потребуется расширение панели и серверное хранилище.</textarea></label></div></div>
+<div class="panel"><h2>Данные демонстрационного магазина</h2><p class="empty-note">Товары и заказы хранятся в localStorage браузера. Кнопка ниже удалит локальные тестовые заказы и вернёт исходный каталог.</p><button class="admin-btn secondary-btn" id="resetDemo">Сбросить демоданные</button></div>
+</section>
+</main></div>
+<script src="admin.js"></script>
+</body></html>

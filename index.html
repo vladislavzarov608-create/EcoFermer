@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#24382d">
+  <title>Экофермер — свежее мясо с доставкой</title>
+  <meta name="description" content="Свежая мясная продукция с доставкой и самовывозом. Говядина, свинина, баранина и птица.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="announcement">Свежая мясная продукция · Доставка и самовывоз</div>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Экофермер — на главную">
+      <span class="brand-mark">Ф</span>
+      <span class="brand-copy"><strong>ЭКОФЕРМЕР</strong><small>НАТУРАЛЬНЫЕ ПРОДУКТЫ ДЛЯ ВАШЕГО СТОЛА</small></span>
+    </a>
+    <nav class="main-nav">
+      <a href="#catalog">Каталог</a><a href="#about">О нас</a><a href="#delivery">Доставка</a><a href="#contacts">Контакты</a><a href="admin.html">Для владельца</a>
+    </nav>
+    <div class="header-actions">
+      <a class="phone" href="tel:+79990000000">+7 (999) 000-00-00</a>
+      <button class="cart-trigger" id="openCart" aria-label="Открыть корзину"><span class="bag-icon">♧</span><span>Корзина</span><b id="cartCount">0</b></button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> ВКУС, КОТОРОМУ МОЖНО ДОВЕРЯТЬ</div>
+        <h1>Хорошее мясо.<br><em>Честный вкус.</em></h1>
+        <p>Отбираем мясную продукцию с вниманием к качеству, чтобы на вашем столе всегда было самое главное — вкусная еда для близких.</p>
+        <div class="hero-buttons"><a class="btn btn-primary" href="#catalog">Выбрать мясо <span>→</span></a><a class="text-link" href="#about">Наша философия <span>↗</span></a></div>
+        <div class="hero-note"><span class="note-icon">✳</span><span><b>Доставка и самовывоз</b><small>Удобный способ получить заказ</small></span></div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image"></div>
+        <div class="round-stamp"><span>ОТБОРНОЕ</span><b>МЯСО</b><span>КАЖДЫЙ ДЕНЬ</span></div>
+        <div class="image-caption"><span>01 / 04</span><span>Вкус начинается с качества</span></div>
+      </div>
+    </section>
+
+    <section class="benefits" id="about">
+      <div class="benefit"><span class="benefit-icon">✳</span><div><b>Внимание к качеству</b><small>Тщательный отбор продукции</small></div></div>
+      <div class="benefit"><span class="benefit-icon">⌂</span><div><b>Удобная доставка</b><small>До двери или самовывоз</small></div></div>
+      <div class="benefit"><span class="benefit-icon">♡</span><div><b>Для семейного стола</b><small>На каждый день и к празднику</small></div></div>
+    </section>
+
+    <section class="catalog-section" id="catalog">
+      <div class="section-heading">
+        <div><div class="eyebrow"><span></span> ВЫБИРАЙТЕ СВОЁ</div><h2>Мясная витрина</h2></div>
+        <p>Подберите любимые продукты<br>для вкусных домашних блюд.</p>
+      </div>
+      <div class="filters" id="filters">
+        <button class="filter active" data-category="all">Всё мясо <span>08</span></button>
+        <button class="filter" data-category="beef">Говядина</button>
+        <button class="filter" data-category="pork">Свинина</button>
+        <button class="filter" data-category="lamb">Баранина</button>
+        <button class="filter" data-category="poultry">Птица</button>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+    </section>
+
+    <section class="story-banner">
+      <div class="story-photo"></div>
+      <div class="story-copy"><div class="eyebrow light"><span></span> ПРОСТО О ХОРОШЕМ</div><h2>Еда объединяет.<br><em>Качество — в деталях.</em></h2><p>Мы верим, что вкусный ужин начинается с правильных продуктов. Поэтому в основе нашего подхода — понятный ассортимент, забота о качестве и удобный сервис.</p><a class="btn btn-light" href="#catalog">Выбрать продукты <span>→</span></a></div>
+    </section>
+
+    <section class="delivery-section" id="delivery">
+      <div class="section-heading"><div><div class="eyebrow"><span></span> БЕЗ ЛИШНИХ ХЛОПОТ</div><h2>Как получить заказ</h2></div><p>Выберите удобный способ<br>получения продуктов.</p></div>
+      <div class="delivery-cards">
+        <article class="delivery-card"><div class="delivery-number">01</div><div class="delivery-symbol">⌂</div><h3>Доставка</h3><p>Привезём заказ по указанному адресу. Доступность и стоимость доставки уточняются при оформлении.</p><a href="#checkout-info">Условия доставки ↗</a></article>
+        <article class="delivery-card"><div class="delivery-number">02</div><div class="delivery-symbol">✳</div><h3>Самовывоз</h3><p>Оформите заказ на сайте и заберите его в согласованное время в точке выдачи.</p><a href="#checkout-info">Как оформить ↗</a></article>
+        <article class="delivery-card"><div class="delivery-number">03</div><div class="delivery-symbol">♡</div><h3>Забота о заказе</h3><p>Уточним детали заказа и поможем подобрать продукты под ваши пожелания.</p><a href="#contacts">Связаться с нами ↗</a></article>
+      </div>
+    </section>
+
+    <section class="newsletter" id="contacts">
+      <div><div class="eyebrow light"><span></span> ОСТАЁМСЯ НА СВЯЗИ</div><h2>Есть вопросы<br>по ассортименту?</h2><p>Позвоните нам — поможем с выбором и оформлением заказа.</p></div>
+      <div class="newsletter-contact"><a href="tel:+79990000000">+7 (999) 000-00-00</a><small>Ежедневно, 09:00–20:00 · Время работы и номер заменить на реальные</small><a class="contact-mail" href="mailto:hello@example.ru">hello@example.ru</a></div>
+    </section>
+  </main>
+
+  <footer class="footer"><a class="brand footer-brand" href="#"><span class="brand-mark">Ф</span><span class="brand-copy"><strong>ЭКОФЕРМЕР</strong><small>НАТУРАЛЬНЫЕ ПРОДУКТЫ ДЛЯ ВАШЕГО СТОЛА</small></span></a><span>© 2026 Экофермер</span><span>Информация и цены на сайте — демонстрационные</span></footer>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Корзина">
+    <div class="drawer-head"><div><small>ВАШ ВЫБОР</small><h2>Корзина <span id="drawerCount">(0)</span></h2></div><button class="close-btn" id="closeCart" aria-label="Закрыть">×</button></div>
+    <div class="cart-items" id="cartItems"><div class="empty-cart"><span>♧</span><h3>Корзина пока пуста</h3><p>Добавьте продукты из каталога — и мы подготовим ваш заказ.</p></div></div>
+    <div class="cart-bottom"><div class="total-line"><span>Итого</span><b id="cartTotal">0 ₽</b></div><button class="btn btn-primary checkout-btn" id="goCheckout" disabled>Перейти к оформлению <span>→</span></button><small>Стоимость доставки будет уточнена менеджером.</small></div>
+  </aside>
+
+  <section class="checkout-modal" id="checkoutModal" aria-label="Оформление заказа">
+    <div class="modal-head"><div><small>ПОСЛЕДНИЙ ШАГ</small><h2>Оформление заказа</h2></div><button class="close-btn" id="closeCheckout">×</button></div>
+    <form id="checkoutForm">
+      <div class="form-grid">
+        <label>Ваше имя<input name="name" required placeholder="Как к вам обращаться"></label>
+        <label>Телефон<input name="phone" required type="tel" placeholder="+7 (___) ___-__-__"></label>
+      </div>
+      <div class="form-label">Как получить заказ?</div>
+      <div class="choice-row"><label class="choice"><input type="radio" name="fulfillment" value="Доставка" checked><span>Доставка</span></label><label class="choice"><input type="radio" name="fulfillment" value="Самовывоз"><span>Самовывоз</span></label></div>
+      <label id="addressField">Адрес доставки<input name="address" placeholder="Улица, дом, квартира"></label>
+      <label>Комментарий к заказу<textarea name="comment" rows="3" placeholder="Пожелания по заказу, удобное время и т. д."></textarea></label>
+      <div class="checkout-summary"><span>Сумма заказа</span><b id="checkoutTotal">0 ₽</b></div>
+      <button class="btn btn-primary submit-order" type="submit">Подтвердить заказ <span>→</span></button>
+      <p class="form-disclaimer">Демонстрационная версия: заказ не отправляется в магазин. Для приёма реальных заказов потребуется подключить сервер или CRM.</p>
+    </form>
+  </section>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
