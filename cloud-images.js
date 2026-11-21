@@ -22,25 +22,38 @@
   }
   client = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true } });
 
-  async function getImageMap() {
-    const { data, error } = await client.from('product_images').select('product_id,image_url');
-    if (error) throw error;
-    return new Map((data || []).map(row => [String(row.product_id), row.image_url]));
-  }
+  
+async function syncStorefront() {
+  if (isAdmin) return;
 
-  async function syncStorefront() {
-    if (isAdmin) return;
-    try {
-      const map = await getImageMap();
-      const products = JSON.parse(localStorage.getItem('ecoProducts') || 'null') || (typeof window.products !== 'undefined' ? window.products : (typeof products !== 'undefined' ? products : []));
-      products.forEach(p => { const url = map.get(String(p.id)); if (url) p.img = url; });
-      if (Array.isArray(products) && products.length) {
-        // Не перезаписываем каталог целиком: только применяем публичные облачные URL фотографий.
-        window.ecofermerCloudImageMap = map;
-        if (typeof window.renderProducts === 'function') window.renderProducts();
+  try {
+    const { data, error } = await client
+      .from('products')
+      .select('id,name,description,price,image_url,category,unit,stock,is_active,tag')
+      .eq('is_active', true)
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+
+    // Если облачный каталог пока пуст, оставляем локальные товары.
+    if (Array.isArray(data) && data.length > 0) {
+      if (typeof window.setEcofermerProductsFromCloud === 'function') {
+        window.setEcofermerProductsFromCloud(data);
       }
-    } catch (err) { console.warn('Не удалось получить облачные фотографии:', err.message); }
+    }
+
+    const map = await getImageMap();
+
+    if (typeof window.applyCloudImageMap === 'function') {
+      window.applyCloudImageMap(map);
+    }
+
+    window.ecofermerCloudImageMap = map;
+
+  } catch (err) {
+    console.warn('Не удалось загрузить облачный каталог:', err.message);
   }
+}
 
   function addAdminControls() {
     const form = $('#productForm');
