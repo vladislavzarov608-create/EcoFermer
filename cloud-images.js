@@ -67,7 +67,47 @@ async function syncStorefront() {
     console.warn('Не удалось загрузить облачный каталог:', err.message);
   }
 }
+async function syncAdminProducts() {
+  try {
+    const { data, error } = await client
+      .from('products')
+      .select('id,name,description,price,image_url,category,unit,stock,is_active,tag')
+      .order('created_at', { ascending: true });
 
+    if (error) throw error;
+
+    if (!Array.isArray(data)) return;
+
+    const products = data.map(row => ({
+      id: String(row.id),
+      name: row.name,
+      category: row.category || '',
+      label: ({
+        beef: 'ГОВЯДИНА',
+        pork: 'СВИНИНА',
+        lamb: 'БАРАНИНА',
+        poultry: 'ПТИЦА'
+      })[row.category] || row.category || '',
+      price: Number(row.price) || 0,
+      stock: Number(row.stock) || 0,
+      unit: row.unit || 'кг',
+      tag: row.tag || '',
+      desc: row.description || '',
+      img: row.image_url || '',
+      active: row.is_active !== false
+    }));
+
+    localStorage.setItem('ecoProducts', JSON.stringify(products));
+
+    if (typeof window.refresh === 'function') {
+      window.refresh();
+    }
+
+    console.log('Облачный каталог загружен в административную панель:', products.length);
+  } catch (err) {
+    console.error('Не удалось загрузить товары из Supabase:', err.message);
+  }
+}
   function addAdminControls() {
     const form = $('#productForm');
     if (!form) return;
@@ -379,6 +419,7 @@ function addMigrationControls() {
   if (isAdmin) {
   addAdminControls();
   addMigrationControls();
+  syncAdminProducts();
 } else {
   syncStorefront();
 }
