@@ -15,6 +15,8 @@ const $ = s => document.querySelector(s);
 const money = n => new Intl.NumberFormat("ru-RU").format(n) + " ₽";
 function renderProducts(){
  const shown = products.filter(p=>p.active!==false && (activeCategory==="all"||p.category===activeCategory));
+ const allCount = document.querySelector('[data-category="all"] span');
+if(allCount) allCount.textContent = products.filter(p=>p.active!==false).length;
  $("#productGrid").innerHTML = shown.map(p=>`<article class="product-card"><div class="product-image" style="background-image:url('${p.img}')">${p.tag?`<span class="product-tag">${p.tag}</span>`:""}</div><div class="product-info"><span class="product-category">${p.label}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="product-bottom"><span class="price">${money(p.price)} <small>/ ${p.unit}</small></span><button class="add-btn" data-add="${p.id}" aria-label="Добавить ${p.name}">+</button></div></div></article>`).join("");
  document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>addToCart(Number(b.dataset.add))));
 }
