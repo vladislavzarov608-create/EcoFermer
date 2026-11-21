@@ -175,7 +175,7 @@ function addMigrationControls() {
       </label>
       <button class="admin-btn" type="button" id="ecoMigrationLogin">Войти</button>
       <button class="admin-btn" type="button" id="ecoMigrationRun" disabled>
-        Перенести 2 товара в Supabase
+        Перенести 3 товара в Supabase
       </button>
     </div>
 
@@ -215,7 +215,7 @@ function addMigrationControls() {
       return;
     }
 
-    if (localProducts.length !== 2) {
+    if (localProducts.length !== 3) {
       say(status, `Найдено товаров: ${localProducts.length}. Для безопасности перенос остановлен: ожидалось ровно 2 товара.`, true);
       return;
     }
@@ -307,16 +307,16 @@ function addMigrationControls() {
 
       const localProducts = getLocalProducts();
 
-      if (!localProducts || localProducts.length !== 2) {
+      if (!localProducts || localProducts.length !== 3) {
         throw new Error(
-          `Перенос отменён. Найдено товаров: ${localProducts ? localProducts.length : 0}. Ожидалось ровно 2.`
+          `Перенос отменён. Найдено товаров: ${localProducts ? localProducts.length : 0}. Ожидалось ровно 3.`
         );
       }
 
       const names = localProducts.map(p => p.name || 'Без названия');
 
       if (!confirm(
-        `Перенести в Supabase именно эти два товара?\n\n1. ${names[0]}\n2. ${names[1]}\n\nЛокальные данные останутся без изменений.`
+        `Перенести в Supabase именно эти три товара?\n\n1. ${names[0]}\n2. ${names[1]}\n\nЛокальные данные останутся без изменений.`
       )) {
         say(status, 'Перенос отменён. Данные не изменены.');
         return;
@@ -346,7 +346,7 @@ function addMigrationControls() {
 
       if (error) throw error;
 
-      say(status, 'Успех! Ровно два товара перенесены в Supabase. Локальные данные сохранены.');
+      say(status, 'Успех! Ровно три товара перенесены в Supabase. Локальные данные сохранены.');
     } catch (err) {
       say(status, `Перенос не выполнен: ${err.message}`, true);
     } finally {
