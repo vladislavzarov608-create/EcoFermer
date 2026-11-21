@@ -60,7 +60,29 @@ window.applyCloudImageMap = function(map) {
       product.img = cloudUrl;
     }
   });
+window.setEcofermerProductsFromCloud = function(rows) {
+  products = (rows || []).map(row => ({
+    id: String(row.id),
+    name: row.name,
+    category: row.category || "",
+    label: ({
+      beef: "ГОВЯДИНА",
+      pork: "СВИНИНА",
+      lamb: "БАРАНИНА",
+      poultry: "ПТИЦА"
+    })[row.category] || row.category || "",
+    desc: row.description || "",
+    price: Number(row.price) || 0,
+    unit: row.unit || "кг",
+    tag: row.tag || "",
+    img: row.image_url || "",
+    stock: Number(row.stock) || 0,
+    active: row.is_active !== false
+  }));
 
+  renderProducts();
+  renderCart();
+};
   renderProducts();
 };
 
