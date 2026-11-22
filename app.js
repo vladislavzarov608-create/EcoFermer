@@ -50,8 +50,8 @@ function renderSpecialOffers() {
           <span class="old-price">${money(p.old_price)}</span>
           <span class="new-price">${money(p.price)} / ${p.unit}</span>
         </div>
-        <button class="add-btn" data-add="${p.id}">
-          Добавить в корзину
+        <button class="add-btn" data-add="${p.id}" aria-label="Добавить ${p.name}">
+          +
         </button>
       </div>
     </article>
