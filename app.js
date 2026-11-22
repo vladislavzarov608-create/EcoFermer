@@ -39,18 +39,67 @@ $("#openCart").onclick=openCart;$("#closeCart").onclick=closeLayers;$("#overlay"
 $("#goCheckout").onclick=()=>{$("#cartDrawer").classList.remove("open");$("#checkoutModal").classList.add("open");};
 $("#closeCheckout").onclick=closeLayers;
 document.querySelectorAll('input[name="fulfillment"]').forEach(r=>r.addEventListener("change",()=>{$("#addressField").style.display=document.querySelector('input[name="fulfillment"]:checked').value==="Доставка"?"block":"none";}));
-$("#checkoutForm").addEventListener("submit",e=>{
- e.preventDefault();if(!cartEntries().length)return;
- const data=Object.fromEntries(new FormData(e.target).entries());
- const order={...data,items:cartEntries().map(x=>({name:x.product.name,qty:x.qty,price:x.product.price})),total:total(),createdAt:new Date().toISOString()};
- const savedOrders = JSON.parse(localStorage.getItem("ecoOrders") || "[]");
- order.id = "EF-" + Date.now().toString().slice(-7);
- order.status = "Новый";
- savedOrders.unshift(order);
- localStorage.setItem("ecoOrders", JSON.stringify(savedOrders));
- console.log("Demo order saved locally:",order);
- closeLayers();cart={};saveCart();e.target.reset();$("#addressField").style.display="block";
- toast("Демонстрационный заказ сформирован. Подключите сервер для приёма заказов.");
+$("#checkoutForm").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  if (!cartEntries().length) return;
+
+  const form = e.target;
+  const submitButton = form.querySelector('button[type="submit"]');
+  const data = Object.fromEntries(new FormData(form).entries());
+
+  const config = window.ECOFERMER_SUPABASE_CONFIG;
+
+  if (!window.supabase || !config || !config.url || !config.anonKey) {
+    toast("Ошибка подключения к серверу. Попробуйте позже.");
+    return;
+  }
+
+  submitButton.disabled = true;
+
+  try {
+    const client = window.supabase.createClient(config.url, config.anonKey);
+
+    const orderNumber = "EF-" + Date.now().toString().slice(-7);
+
+    const order = {
+      order_number: orderNumber,
+      customer_name: data.name,
+      phone: data.phone,
+      fulfillment: data.fulfillment,
+      address: data.address || "",
+      comment: data.comment || "",
+      items: cartEntries().map(x => ({
+        name: x.product.name,
+        qty: x.qty,
+        price: x.product.price
+      })),
+      total: total(),
+      status: "Новый"
+    };
+
+    const { error } = await client
+      .from("orders")
+      .insert(order);
+
+    if (error) throw error;
+
+    console.log("Order successfully saved:", order);
+
+    closeLayers();
+    cart = {};
+    saveCart();
+    form.reset();
+    $("#addressField").style.display = "block";
+
+    toast("Заказ " + orderNumber + " успешно отправлен!");
+
+  } catch (error) {
+    console.error("Order save error:", error);
+    toast("Не удалось отправить заказ. Попробуйте ещё раз.");
+  } finally {
+    submitButton.disabled = false;
+  }
 });
 $("#menuToggle").onclick=()=>$(".main-nav").classList.toggle("show");
 window.applyCloudImageMap = function(map) {
