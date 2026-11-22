@@ -94,6 +94,7 @@ async function renderOrders() {
   $("#statRevenue").textContent = fmt(
     orders.reduce((sum, o) => sum + o.total, 0)
   );
+  renderRecent();
 
   document.querySelectorAll("[data-status]").forEach(sel => {
     sel.onchange = async () => {
