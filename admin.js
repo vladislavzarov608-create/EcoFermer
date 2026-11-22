@@ -52,7 +52,8 @@ async function renderOrders() {
 
   if (error) {
     console.error("Ошибка загрузки заказов:", error);
-    $("#emptyOrders").textContent = "Не удалось загрузить заказы.";
+    $("#emptyDeliveryOrders").textContent = "Не удалось загрузить заказы.";
+    $("#emptyPickupOrders").textContent = "Не удалось загрузить заказы.";
     return;
   }
 
@@ -70,30 +71,40 @@ async function renderOrders() {
     status: o.status
   }));
 
-  $("#ordersTable").innerHTML = orders.map(o => `
-    <tr>
-      <td><b>${o.id}</b></td>
-      <td>${new Date(o.createdAt).toLocaleString("ru-RU")}</td>
-      <td>${o.name}<br>${o.phone}</td>
-      <td>${o.fulfillment}<br>${o.address || ""}</td>
-      <td>${(o.items || []).map(i => `${i.name} × ${i.qty}`).join("<br>")}</td>
-      <td><b>${fmt(o.total)}</b></td>
-      <td>
-        <select data-status="${o.dbId}">
-          ${["Новый","Подтверждён","Готовится","Передан в доставку","Выполнен","Отменён"]
-            .map(s => `<option ${o.status === s ? "selected" : ""}>${s}</option>`).join("")}
-        </select>
-      </td>
-    </tr>
-  `).join("");
+  const deliveryOrders = orders.filter(o => o.fulfillment === "Доставка");
+  const pickupOrders = orders.filter(o => o.fulfillment === "Самовывоз");
 
-  $("#emptyOrders").style.display = orders.length ? "none" : "block";
+  function renderTable(list) {
+    return list.map(o => `
+      <tr>
+        <td><b>${o.id}</b></td>
+        <td>${new Date(o.createdAt).toLocaleString("ru-RU")}</td>
+        <td>${o.name}<br>${o.phone}</td>
+        <td>${o.address || "Не указан"}</td>
+        <td>${(o.items || []).map(i => `${i.name} × ${i.qty}`).join("<br>")}</td>
+        <td><b>${fmt(o.total)}</b></td>
+        <td>
+          <select data-status="${o.dbId}">
+            ${["Новый","Подтверждён","Готовится","Передан в доставку","Выполнен","Отменён"]
+              .map(s => `<option ${o.status === s ? "selected" : ""}>${s}</option>`).join("")}
+          </select>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  $("#deliveryOrdersTable").innerHTML = renderTable(deliveryOrders);
+  $("#pickupOrdersTable").innerHTML = renderTable(pickupOrders);
+
+  $("#emptyDeliveryOrders").style.display = deliveryOrders.length ? "none" : "block";
+  $("#emptyPickupOrders").style.display = pickupOrders.length ? "none" : "block";
 
   $("#statOrders").textContent = orders.length;
   $("#statNew").textContent = orders.filter(o => o.status === "Новый").length;
   $("#statRevenue").textContent = fmt(
     orders.reduce((sum, o) => sum + o.total, 0)
   );
+
   renderRecent();
 
   document.querySelectorAll("[data-status]").forEach(sel => {
