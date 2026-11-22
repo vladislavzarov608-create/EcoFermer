@@ -327,10 +327,26 @@
 /* Управление специальными предложениями */
 .offers-controls {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 22px;
+  width: 100%;
   margin-top: 28px;
+  position: relative;
+}
+
+.offers-controls button:first-child {
+  order: 1;
+}
+
+.offers-controls span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  order: 2;
+}
+
+.offers-controls button:last-child {
+  order: 3;
 }
 
 .offers-controls button {
