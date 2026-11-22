@@ -20,6 +20,9 @@ if(allCount) allCount.textContent = products.filter(p=>p.active!==false).length;
 $("#productGrid").innerHTML = shown.map(p=>`<article class="product-card"><div class="product-image" style="background-image:url('${p.img}')">${p.tag?`<span class="product-tag">${p.tag}</span>`:""}</div><div class="product-info"><span class="product-category">${p.label}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="product-bottom"><div class="price-block">${p.old_price && p.old_price > p.price ? `<span class="old-price">${money(p.old_price)}</span><span class="price discount-price">${money(p.price)} <small>/ ${p.unit}</small></span><span class="discount-percent">−${Math.round((1-p.price/p.old_price)*100)}%</span>` : `<span class="price">${money(p.price)} <small>/ ${p.unit}</small></span>`}</div><button class="add-btn" data-add="${p.id}" aria-label="Добавить ${p.name}">+</button></div></div></article>`).join("");
  document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>addToCart(b.dataset.add)));
 }
+let specialOffersPage = 0;
+let specialOffersTimer = null;
+
 function renderSpecialOffers() {
   const container = document.getElementById("offersGrid");
   if (!container) return;
@@ -35,31 +38,56 @@ function renderSpecialOffers() {
     return;
   }
 
-  container.innerHTML = discounted.map(p => `
-    <article class="offer-card">
-      <div class="offer-image" style="background-image:url('${p.img}')">
-        <span class="offer-discount">
-          −${Math.round((1 - p.price / p.old_price) * 100)}%
-        </span>
-      </div>
-      <div class="offer-info">
-        <span class="product-category">${p.label}</span>
-        <h3>${p.name}</h3>
-        <p>${p.desc}</p>
-        <div class="offer-prices">
-          <span class="old-price">${money(p.old_price)}</span>
-          <span class="new-price">${money(p.price)} / ${p.unit}</span>
-        </div>
-        <button class="add-btn" data-add="${p.id}" aria-label="Добавить ${p.name}">
-          +
-        </button>
-      </div>
-    </article>
-  `).join("");
+  const perPage = 3;
+  const totalPages = Math.ceil(discounted.length / perPage);
 
-  container.querySelectorAll("[data-add]").forEach(button => {
-    button.addEventListener("click", () => addToCart(button.dataset.add));
-  });
+  specialOffersPage = specialOffersPage % totalPages;
+
+  function showOffers() {
+    const start = specialOffersPage * perPage;
+    const currentOffers = discounted.slice(start, start + perPage);
+
+    container.innerHTML = currentOffers.map(p => `
+      <article class="offer-card">
+        <div class="offer-image" style="background-image:url('${p.img}')">
+          <span class="offer-discount">
+            −${Math.round((1 - p.price / p.old_price) * 100)}%
+          </span>
+        </div>
+        <div class="offer-info">
+          <span class="product-category">${p.label}</span>
+          <h3>${p.name}</h3>
+          <p>${p.desc}</p>
+          <div class="offer-prices">
+            <span class="old-price">${money(p.old_price)}</span>
+            <span class="new-price">${money(p.price)} / ${p.unit}</span>
+          </div>
+          <button class="add-btn" data-add="${p.id}" aria-label="Добавить ${p.name}">
+            +
+          </button>
+        </div>
+      </article>
+    `).join("");
+
+    container.querySelectorAll("[data-add]").forEach(button => {
+      button.addEventListener("click", () =>
+        addToCart(button.dataset.add)
+      );
+    });
+  }
+
+  showOffers();
+
+  if (specialOffersTimer) {
+    clearInterval(specialOffersTimer);
+  }
+
+  if (totalPages > 1) {
+    specialOffersTimer = setInterval(() => {
+      specialOffersPage = (specialOffersPage + 1) % totalPages;
+      showOffers();
+    }, 5000);
+  }
 }
 function addToCart(id){cart[id]=(cart[id]||0)+1;saveCart();toast("Добавлено в корзину");}
 function saveCart(){localStorage.setItem("farmCart",JSON.stringify(cart));renderCart();}
