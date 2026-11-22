@@ -38,10 +38,78 @@ function renderProducts(){
   };
 });
 }
-function renderOrders(){
- $("#ordersTable").innerHTML=orders.map(o=>`<tr><td><b>${o.id||"—"}</b></td><td>${new Date(o.createdAt).toLocaleString("ru-RU")}</td><td>${o.name||"—"}<br>${o.phone||""}</td><td>${o.fulfillment||"—"}<br>${o.address||""}</td><td>${(o.items||[]).map(i=>`${i.name} × ${i.qty}`).join("<br>")}</td><td><b>${fmt(o.total)}</b></td><td><select data-status="${o.id}">${["Новый","Подтверждён","Готовится","Передан в доставку","Выполнен","Отменён"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}</select></td></tr>`).join("");
- $("#emptyOrders").style.display=orders.length?"none":"block";
- document.querySelectorAll("[data-status]").forEach(sel=>sel.onchange=()=>{const o=orders.find(x=>x.id===sel.dataset.status);if(o){o.status=sel.value;localStorage.setItem("ecoOrders",JSON.stringify(orders));refresh();}});
+async function renderOrders() {
+  const config = window.ECOFERMER_SUPABASE_CONFIG;
+  const client = window.supabase.createClient(
+    config.url,
+    config.anonKey
+  );
+
+  const { data, error } = await client
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Ошибка загрузки заказов:", error);
+    $("#emptyOrders").textContent = "Не удалось загрузить заказы.";
+    return;
+  }
+
+  orders = (data || []).map(o => ({
+    id: o.order_number,
+    dbId: o.id,
+    createdAt: o.created_at,
+    name: o.customer_name,
+    phone: o.phone,
+    fulfillment: o.fulfillment,
+    address: o.address,
+    comment: o.comment,
+    items: o.items,
+    total: Number(o.total),
+    status: o.status
+  }));
+
+  $("#ordersTable").innerHTML = orders.map(o => `
+    <tr>
+      <td><b>${o.id}</b></td>
+      <td>${new Date(o.createdAt).toLocaleString("ru-RU")}</td>
+      <td>${o.name}<br>${o.phone}</td>
+      <td>${o.fulfillment}<br>${o.address || ""}</td>
+      <td>${(o.items || []).map(i => `${i.name} × ${i.qty}`).join("<br>")}</td>
+      <td><b>${fmt(o.total)}</b></td>
+      <td>
+        <select data-status="${o.dbId}">
+          ${["Новый","Подтверждён","Готовится","Передан в доставку","Выполнен","Отменён"]
+            .map(s => `<option ${o.status === s ? "selected" : ""}>${s}</option>`).join("")}
+        </select>
+      </td>
+    </tr>
+  `).join("");
+
+  $("#emptyOrders").style.display = orders.length ? "none" : "block";
+
+  $("#statOrders").textContent = orders.length;
+  $("#statNew").textContent = orders.filter(o => o.status === "Новый").length;
+  $("#statRevenue").textContent = fmt(
+    orders.reduce((sum, o) => sum + o.total, 0)
+  );
+
+  document.querySelectorAll("[data-status]").forEach(sel => {
+    sel.onchange = async () => {
+      const { error } = await client
+        .from("orders")
+        .update({ status: sel.value })
+        .eq("id", sel.dataset.status);
+
+      if (error) {
+        alert("Не удалось изменить статус: " + error.message);
+        return;
+      }
+
+      renderOrders();
+    };
+  });
 }
 function renderRecent(){
  const recent=orders.slice(0,5);
