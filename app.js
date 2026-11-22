@@ -38,7 +38,37 @@ $("#filters").addEventListener("click",e=>{const b=e.target.closest("[data-categ
 $("#openCart").onclick=openCart;$("#closeCart").onclick=closeLayers;$("#overlay").onclick=closeLayers;
 $("#goCheckout").onclick=()=>{$("#cartDrawer").classList.remove("open");$("#checkoutModal").classList.add("open");};
 $("#closeCheckout").onclick=closeLayers;
-document.querySelectorAll('input[name="fulfillment"]').forEach(r=>r.addEventListener("change",()=>{$("#addressField").style.display=document.querySelector('input[name="fulfillment"]:checked').value==="Доставка"?"block":"none";}));
+function updateFulfillmentFields() {
+  const fulfillment = document.querySelector('input[name="fulfillment"]:checked').value;
+
+  const addressField = $("#addressField");
+  const pickupPointField = $("#pickupPointField");
+
+  const addressInput = addressField.querySelector("input");
+  const pickupSelect = pickupPointField.querySelector("select");
+
+  if (fulfillment === "Доставка") {
+    addressField.style.display = "block";
+    pickupPointField.style.display = "none";
+
+    addressInput.required = true;
+    pickupSelect.required = false;
+    pickupSelect.value = "";
+  } else {
+    addressField.style.display = "none";
+    pickupPointField.style.display = "block";
+
+    addressInput.required = false;
+    addressInput.value = "";
+    pickupSelect.required = true;
+  }
+}
+
+document.querySelectorAll('input[name="fulfillment"]').forEach(r => {
+  r.addEventListener("change", updateFulfillmentFields);
+});
+
+updateFulfillmentFields();
 $("#checkoutForm").addEventListener("submit", async e => {
   e.preventDefault();
 
