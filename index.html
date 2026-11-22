@@ -116,6 +116,15 @@
       <div class="form-label">Как получить заказ?</div>
       <div class="choice-row"><label class="choice"><input type="radio" name="fulfillment" value="Доставка" checked><span>Доставка</span></label><label class="choice"><input type="radio" name="fulfillment" value="Самовывоз"><span>Самовывоз</span></label></div>
       <label id="addressField">Адрес доставки<input name="address" placeholder="Улица, дом, квартира"></label>
+      <label id="pickupPointField" style="display:none;">
+  Выберите точку самовывоза
+  <select name="pickup_point">
+    <option value="">Выберите адрес</option>
+    <option value="Москва, улица Молодцова, 2А">Москва, улица Молодцова, 2А</option>
+    <option value="Одинцово, улица Чистякова, 42">Одинцово, улица Чистякова, 42</option>
+    <option value="Москва, Алтуфьево, Бибиревский рынок">Москва, Алтуфьево, Бибиревский рынок</option>
+  </select>
+</label>
       <label>Комментарий к заказу<textarea name="comment" rows="3" placeholder="Пожелания по заказу, удобное время и т. д."></textarea></label>
       <div class="checkout-summary"><span>Сумма заказа</span><b id="checkoutTotal">0 ₽</b></div>
       <button class="btn btn-primary submit-order" type="submit">Подтвердить заказ <span>→</span></button>
