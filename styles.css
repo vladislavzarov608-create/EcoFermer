@@ -117,3 +117,23 @@
   }
 }
 /* Конец стилей информационных окон */
+.old-price {
+  color: #929292;
+  font-size: 13px;
+  text-decoration: line-through;
+}
+
+.discount-price {
+  color: #b33b2e;
+  font-weight: 700;
+}
+
+.discount-percent {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: #f7e5df;
+  color: #a6382b;
+  font-size: 11px;
+  font-weight: 700;
+}
