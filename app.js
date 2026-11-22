@@ -297,11 +297,5 @@ window.setEcofermerProductsFromCloud = function(rows) {
   renderProducts();
 };
 
-  renderProducts();
-  renderCart();
-};
-  renderProducts();
-};
-
 renderProducts();
 renderCart();
