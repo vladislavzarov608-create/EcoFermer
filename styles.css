@@ -329,24 +329,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  margin-top: 28px;
   position: relative;
-}
-
-.offers-controls button:first-child {
-  order: 1;
-}
-
-.offers-controls span {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  order: 2;
-}
-
-.offers-controls button:last-child {
-  order: 3;
+  width: calc(100% + 16.4%);
+  margin-top: 28px;
+  margin-left: -8.2%;
+  padding: 0 25px;
 }
 
 .offers-controls button {
@@ -368,6 +355,9 @@
 }
 
 .offers-controls span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 11px;
   color: #77796f;
   min-width: 35px;
