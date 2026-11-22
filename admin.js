@@ -148,7 +148,7 @@ function editProduct(id){
  const p=products.find(x=>String(x.id)===String(id));const f=$("#productForm");f.reset();
  $("#productEditor").hidden=false;$("#editorTitle").textContent=p?"Редактирование товара":"Новый товар";
  f.elements.id.value=p?.id||"";
- ["name","category","price","stock","unit","tag","desc","img"].forEach(k=>f.elements[k].value=p?.[k]??(k==="unit"?"кг":k==="stock"?0:""));
+ ["name","category","price","old_price","stock","unit","tag","desc","img"].forEach(k=>f.elements[k].value=p?.[k]??(k==="unit"?"кг":k==="stock"?0:""));
  f.elements.active.checked=p?.active!==false;
  $("#productEditor").scrollIntoView({behavior:"smooth"});
 }
@@ -156,7 +156,9 @@ $("#addProduct").onclick=()=>editProduct(null);
 $("#cancelEdit").onclick=()=>$("#productEditor").hidden=true;
 $("#productForm").onsubmit=e=>{
  e.preventDefault();const f=e.target;const id=f.elements.id.value?String(f.elements.id.value):String(Date.now());
- const p={id,name:f.elements.name.value.trim(),category:f.elements.category.value,label:categoryNames[f.elements.category.value].toUpperCase(),price:Number(f.elements.price.value),stock:Number(f.elements.stock.value),unit:f.elements.unit.value||"кг",tag:f.elements.tag.value,desc:f.elements.desc.value,img:f.elements.img.value||"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=700&q=80",active:f.elements.active.checked};
+ const p={id,name:f.elements.name.value.trim(),category:f.elements.category.value,label:categoryNames[f.elements.category.value].toUpperCase(),price:Number(f.elements.price.value),old_price:f.elements.old_price.value
+  ? Number(f.elements.old_price.value)
+  : null,stock:Number(f.elements.stock.value),unit:f.elements.unit.value||"кг",tag:f.elements.tag.value,desc:f.elements.desc.value,img:f.elements.img.value||"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=700&q=80",active:f.elements.active.checked};
  const i=products.findIndex(x=>x.id===id);if(i>=0)products[i]=p;else products.push(p);
  saveProducts();$("#productEditor").hidden=true;refresh();alert("Товар сохранён в административной панели и отправлен в облачный каталог.");
 };
