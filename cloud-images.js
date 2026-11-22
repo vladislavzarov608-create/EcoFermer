@@ -42,7 +42,7 @@ async function syncStorefront() {
   try {
     const { data, error } = await client
       .from('products')
-      .select('id,name,description,price,image_url,category,unit,stock,is_active,tag')
+      .select('id,name,description,price,old_price,image_url,category,unit,stock,is_active,tag')
       .eq('is_active', true)
       .order('created_at', { ascending: true });
 
@@ -71,7 +71,7 @@ async function syncAdminProducts() {
   try {
     const { data, error } = await client
       .from('products')
-      .select('id,name,description,price,image_url,category,unit,stock,is_active,tag')
+      .select('id,name,description,price,old_price,image_url,category,unit,stock,is_active,tag')
       .order('created_at', { ascending: true });
 
     if (error) throw error;
