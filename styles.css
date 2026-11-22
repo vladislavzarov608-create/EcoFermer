@@ -14,3 +14,9 @@
   background-size: cover;
   background-repeat: no-repeat;
 }
+.story-photo {
+  background-image: url("./assets/images/story-meat.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
