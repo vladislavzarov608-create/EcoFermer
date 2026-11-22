@@ -324,3 +324,36 @@
 .offers-grid .offer-card:nth-child(4) {
   animation-delay: 0.24s;
 }
+/* Управление специальными предложениями */
+.offers-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  margin-top: 28px;
+}
+
+.offers-controls button {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #d8cbbb;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--forest);
+  font-size: 25px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.offers-controls button:hover {
+  background: var(--forest);
+  color: #fff;
+  border-color: var(--forest);
+}
+
+.offers-controls span {
+  font-size: 11px;
+  color: #77796f;
+  min-width: 35px;
+  text-align: center;
+}
