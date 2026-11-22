@@ -38,7 +38,7 @@ function renderSpecialOffers() {
     return;
   }
 
-  const perPage = 3;
+  const perPage = 4;
   const totalPages = Math.ceil(discounted.length / perPage);
 
   specialOffersPage = specialOffersPage % totalPages;
