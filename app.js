@@ -20,6 +20,47 @@ if(allCount) allCount.textContent = products.filter(p=>p.active!==false).length;
 $("#productGrid").innerHTML = shown.map(p=>`<article class="product-card"><div class="product-image" style="background-image:url('${p.img}')">${p.tag?`<span class="product-tag">${p.tag}</span>`:""}</div><div class="product-info"><span class="product-category">${p.label}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="product-bottom"><div class="price-block">${p.old_price && p.old_price > p.price ? `<span class="old-price">${money(p.old_price)}</span><span class="price discount-price">${money(p.price)} <small>/ ${p.unit}</small></span><span class="discount-percent">−${Math.round((1-p.price/p.old_price)*100)}%</span>` : `<span class="price">${money(p.price)} <small>/ ${p.unit}</small></span>`}</div><button class="add-btn" data-add="${p.id}" aria-label="Добавить ${p.name}">+</button></div></div></article>`).join("");
  document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>addToCart(b.dataset.add)));
 }
+function renderSpecialOffers() {
+  const container = document.getElementById("offersGrid");
+  if (!container) return;
+
+  const discounted = products.filter(p =>
+    p.active !== false &&
+    Number(p.old_price) > Number(p.price) &&
+    Number(p.price) > 0
+  );
+
+  if (!discounted.length) {
+    container.innerHTML = "<p>Скоро здесь появятся специальные предложения.</p>";
+    return;
+  }
+
+  container.innerHTML = discounted.map(p => `
+    <article class="offer-card">
+      <div class="offer-image" style="background-image:url('${p.img}')">
+        <span class="offer-discount">
+          −${Math.round((1 - p.price / p.old_price) * 100)}%
+        </span>
+      </div>
+      <div class="offer-info">
+        <span class="product-category">${p.label}</span>
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <div class="offer-prices">
+          <span class="old-price">${money(p.old_price)}</span>
+          <span class="new-price">${money(p.price)} / ${p.unit}</span>
+        </div>
+        <button class="add-btn" data-add="${p.id}">
+          Добавить в корзину
+        </button>
+      </div>
+    </article>
+  `).join("");
+
+  container.querySelectorAll("[data-add]").forEach(button => {
+    button.addEventListener("click", () => addToCart(button.dataset.add));
+  });
+}
 function addToCart(id){cart[id]=(cart[id]||0)+1;saveCart();toast("Добавлено в корзину");}
 function saveCart(){localStorage.setItem("farmCart",JSON.stringify(cart));renderCart();}
 function cartEntries(){return Object.entries(cart).filter(([id,q])=>q>0).map(([id,q])=>({product:products.find(p=>String(p.id)===String(id)),qty:q})).filter(x=>x.product);}
@@ -294,9 +335,11 @@ window.setEcofermerProductsFromCloud = function(rows) {
     active: row.is_active !== false
   }));
 
-  localStorage.setItem("ecoProducts", JSON.stringify(products));
-  renderProducts();
+ localStorage.setItem("ecoProducts", JSON.stringify(products));
+renderProducts();
+renderSpecialOffers();
 };
 
 renderProducts();
+renderSpecialOffers();
 renderCart();
