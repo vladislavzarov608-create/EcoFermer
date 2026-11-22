@@ -262,3 +262,12 @@
     height: 220px;
   }
 }
+/* Кнопка специальных предложений */
+.offer-info .add-btn {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 18px;
+  font-size: 13px;
+  white-space: nowrap;
+  margin-top: 16px;
+}
