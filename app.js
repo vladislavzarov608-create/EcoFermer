@@ -97,7 +97,9 @@ $("#checkoutForm").addEventListener("submit", async e => {
       customer_name: data.name,
       phone: data.phone,
       fulfillment: data.fulfillment,
-      address: data.address || "",
+      address: data.fulfillment === "Самовывоз"
+  ? data.pickup_point || ""
+  : data.address || "",
       comment: data.comment || "",
       items: cartEntries().map(x => ({
         name: x.product.name,
