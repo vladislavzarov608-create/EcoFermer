@@ -42,8 +42,54 @@ body { visibility: hidden; }
 </form></div>
 </section>
 <section class="admin-section" id="orders">
-<div class="admin-heading"><div><h1>Заказы</h1><p>Просмотр заказов и изменение их статусов</p></div></div>
-<div class="panel"><div class="table-wrap"><table class="admin-table"><thead><tr><th>Номер</th><th>Дата</th><th>Покупатель</th><th>Получение</th><th>Состав</th><th>Сумма</th><th>Статус</th></tr></thead><tbody id="ordersTable"></tbody></table></div><p class="empty-note" id="emptyOrders">Пока заказов нет. Тестовый заказ можно оформить в магазине.</p></div>
+  <div class="admin-heading">
+    <div>
+      <h1>Заказы</h1>
+      <p>Заказы разделены по способу получения</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Заказы с доставкой</h2>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Номер</th>
+            <th>Дата</th>
+            <th>Покупатель</th>
+            <th>Адрес доставки</th>
+            <th>Состав</th>
+            <th>Сумма</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody id="deliveryOrdersTable"></tbody>
+      </table>
+    </div>
+    <p class="empty-note" id="emptyDeliveryOrders">Заказов с доставкой пока нет.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Заказы с самовывозом</h2>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Номер</th>
+            <th>Дата</th>
+            <th>Покупатель</th>
+            <th>Точка самовывоза</th>
+            <th>Состав</th>
+            <th>Сумма</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody id="pickupOrdersTable"></tbody>
+      </table>
+    </div>
+    <p class="empty-note" id="emptyPickupOrders">Заказов с самовывозом пока нет.</p>
+  </div>
 </section>
 <section class="admin-section" id="settings">
 <div class="admin-heading"><div><h1>Настройки</h1><p>Контактная информация и демонстрационные данные</p></div></div>
