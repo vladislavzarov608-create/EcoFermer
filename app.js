@@ -122,8 +122,7 @@ $("#checkoutForm").addEventListener("submit", async e => {
     cart = {};
     saveCart();
     form.reset();
-    $("#addressField").style.display = "block";
-
+    updateFulfillmentFields();
     toast("Заказ " + orderNumber + " успешно отправлен!");
 
   } catch (error) {
