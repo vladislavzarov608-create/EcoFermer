@@ -101,6 +101,93 @@ $("#checkoutForm").addEventListener("submit", async e => {
     submitButton.disabled = false;
   }
 });
+// Информационные окна Экофермер
+const infoModalData = {
+  delivery: {
+    title: "Доставка",
+    content: `
+      <p>Мы поможем организовать получение вашего заказа по указанному адресу.</p>
+      <p><strong>Как оформить доставку:</strong></p>
+      <ul>
+        <li>Выберите продукты в каталоге и добавьте их в корзину.</li>
+        <li>Перейдите к оформлению заказа.</li>
+        <li>Укажите имя, телефон и полный адрес доставки.</li>
+        <li>Отправьте заказ.</li>
+      </ul>
+      <p>Возможность и стоимость доставки необходимо уточнить отдельно. Все детали согласовываются до получения заказа.</p>
+    `
+  },
+  pickup: {
+    title: "Самовывоз",
+    content: `
+      <p>Вы можете оформить заказ на сайте и забрать выбранные продукты самостоятельно.</p>
+      <p><strong>Как это сделать:</strong></p>
+      <ul>
+        <li>Выберите нужные продукты в каталоге.</li>
+        <li>Добавьте их в корзину.</li>
+        <li>При оформлении выберите способ получения «Самовывоз».</li>
+        <li>Укажите контактный телефон и отправьте заказ.</li>
+      </ul>
+      <p>Адрес точки выдачи и время получения необходимо предварительно согласовать. Не приезжайте без подтверждения готовности заказа.</p>
+    `
+  },
+  care: {
+    title: "Забота о вашем заказе",
+    content: `
+      <p>Мы стремимся сделать выбор и оформление продуктов максимально удобными.</p>
+      <p><strong>Перед отправкой заказа:</strong></p>
+      <ul>
+        <li>Проверьте состав корзины и количество продуктов.</li>
+        <li>Укажите правильный номер телефона.</li>
+        <li>Добавьте комментарий, если у вас есть особые пожелания.</li>
+        <li>Выберите удобный способ получения.</li>
+      </ul>
+      <p>Если у вас возникли вопросы по ассортименту или оформлению, воспользуйтесь контактами, указанными на сайте.</p>
+    `
+  }
+};
+
+const infoModalOverlay = $("#infoModalOverlay");
+const infoModalTitle = $("#infoModalTitle");
+const infoModalContent = $("#infoModalContent");
+
+function openInfoModal(type) {
+  const info = infoModalData[type];
+  if (!info) return;
+
+  infoModalTitle.textContent = info.title;
+  infoModalContent.innerHTML = info.content;
+  infoModalOverlay.classList.add("show");
+  document.body.style.overflow = "hidden";
+  $("#infoModalClose").focus();
+}
+
+function closeInfoModal() {
+  infoModalOverlay.classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+document.querySelectorAll("[data-info]").forEach(link => {
+  link.addEventListener("click", event => {
+    event.preventDefault();
+    openInfoModal(link.dataset.info);
+  });
+});
+
+$("#infoModalClose").addEventListener("click", closeInfoModal);
+
+infoModalOverlay.addEventListener("click", event => {
+  if (event.target === infoModalOverlay) {
+    closeInfoModal();
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeInfoModal();
+  }
+});
+// Конец информационных окон
 $("#menuToggle").onclick=()=>$(".main-nav").classList.toggle("show");
 window.applyCloudImageMap = function(map) {
   products.forEach(product => {
