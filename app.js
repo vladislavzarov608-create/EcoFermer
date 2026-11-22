@@ -267,6 +267,7 @@ window.applyCloudImageMap = function(map) {
       product.img = cloudUrl;
     }
   });
+};
 window.setEcofermerProductsFromCloud = function(rows) {
   products = (rows || []).map(row => ({
     id: String(row.id),
