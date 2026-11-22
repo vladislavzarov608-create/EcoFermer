@@ -1,5 +1,13 @@
 const $=s=>document.querySelector(s);
-const categoryNames={beef:"Говядина",pork:"Свинина",lamb:"Баранина",poultry:"Птица"};
+const categoryNames={
+  beef:"Говядина",
+  pork:"Свинина",
+  lamb:"Баранина",
+  poultry:"Птица",
+  sausages:"Колбасные изделия",
+  cheese:"Сыры",
+  dairy:"Молочная продукция"
+};
 const fmt=n=>new Intl.NumberFormat("ru-RU").format(n||0)+" ₽";
 let products=JSON.parse(localStorage.getItem("ecoProducts")||"null")||[];
 let orders=JSON.parse(localStorage.getItem("ecoOrders")||"[]");
