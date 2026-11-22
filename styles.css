@@ -173,3 +173,92 @@
   letter-spacing: .3px;
   box-shadow: 0 2px 6px #c6282830;
 }
+/* Специальные предложения */
+.special-offers {
+  padding: 75px 8.2%;
+  background: #f1ede3;
+}
+
+.special-offers .section-heading {
+  margin-bottom: 30px;
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.offer-card {
+  background: #fff;
+  border: 1px solid #e5ded1;
+  overflow: hidden;
+  position: relative;
+}
+
+.offer-image {
+  height: 210px;
+  background: #e9e3d8 center/cover;
+  position: relative;
+}
+
+.offer-discount {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  background: #c62828;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 4px;
+}
+
+.offer-info {
+  padding: 20px;
+}
+
+.offer-info h3 {
+  font: 21px "Playfair Display";
+  color: var(--forest);
+  margin: 8px 0;
+}
+
+.offer-info p {
+  color: #85867d;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.offer-prices {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 17px;
+}
+
+.offer-prices .old-price {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.offer-prices .new-price {
+  color: #c62828;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+@media(max-width:700px) {
+  .special-offers {
+    padding: 55px 6%;
+  }
+
+  .offers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .offer-image {
+    height: 220px;
+  }
+}
