@@ -221,6 +221,9 @@ async function syncAdminProducts() {
   name: form.elements.name.value.trim(),
   description: form.elements.desc.value.trim(),
   price: Number(form.elements.price.value) || 0,
+  old_price: form.elements.old_price.value
+    ? Number(form.elements.old_price.value)
+    : null,
   image_url: form.elements.img.value.trim() || null,
   category: form.elements.category.value,
   unit: form.elements.unit.value || 'кг',
