@@ -89,6 +89,9 @@ async function syncAdminProducts() {
         poultry: 'ПТИЦА'
       })[row.category] || row.category || '',
       price: Number(row.price) || 0,
+      old_price: row.old_price !== null
+        ? Number(row.old_price)
+        : null,
       stock: Number(row.stock) || 0,
       unit: row.unit || 'кг',
       tag: row.tag || '',
