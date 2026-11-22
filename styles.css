@@ -20,3 +20,100 @@
   background-size: cover;
   background-repeat: no-repeat;
 }
+/* Информационные окна Экофермер */
+.info-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 35, 25, 0.72);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.info-modal-overlay.show {
+  display: flex;
+}
+
+.info-modal {
+  position: relative;
+  width: min(100%, 620px);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 2px solid var(--forest);
+  border-top: 7px solid var(--forest);
+  border-radius: 6px;
+  padding: clamp(28px, 5vw, 48px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+  animation: infoModalAppear 0.25s ease;
+}
+
+@keyframes infoModalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  border: 0;
+  background: transparent;
+  font-size: 32px;
+  cursor: pointer;
+  color: var(--forest);
+}
+
+.info-modal-close:hover {
+  color: #8a6245;
+}
+
+.info-modal h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  color: var(--forest);
+  margin: 18px 0 20px;
+}
+
+.info-modal-content {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #596056;
+  margin-bottom: 24px;
+}
+
+.info-modal-content p {
+  margin: 0 0 14px;
+}
+
+.info-modal-content strong {
+  color: var(--forest);
+}
+
+.info-modal-content ul {
+  padding-left: 20px;
+}
+
+.info-modal-content li {
+  margin-bottom: 7px;
+}
+
+@media (max-width: 600px) {
+  .info-modal {
+    padding: 28px 22px;
+    max-height: 90vh;
+  }
+
+  .info-modal h2 {
+    font-size: 27px;
+  }
+}
+/* Конец стилей информационных окон */
