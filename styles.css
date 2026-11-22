@@ -297,3 +297,30 @@
     height: 190px;
   }
 }
+/* Плавное появление специальных предложений */
+@keyframes offersFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.offers-grid .offer-card {
+  animation: offersFadeIn 0.7s ease both;
+}
+
+.offers-grid .offer-card:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.offers-grid .offer-card:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.offers-grid .offer-card:nth-child(4) {
+  animation-delay: 0.24s;
+}
