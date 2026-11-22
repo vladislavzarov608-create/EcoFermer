@@ -4,6 +4,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Экофермер — административная панель</title><link rel="stylesheet" href="styles.css">
 <style>
+body { visibility: hidden; }
+</style>
+<style>
 .admin-body{background:#f3f1ea;min-height:100vh}.admin-top{background:#24382d;color:#fff;padding:18px 4%;display:flex;justify-content:space-between;align-items:center}.admin-top .brand{color:#fff}.admin-top .brand-copy small{color:#c7cbbf}.admin-top a{color:#e6e0d3;text-decoration:none;font-size:11px}.admin-layout{display:grid;grid-template-columns:225px 1fr;max-width:1440px;margin:auto;min-height:calc(100vh - 76px)}.admin-side{background:#e9e5db;padding:25px 16px}.admin-side button{display:flex;gap:11px;align-items:center;width:100%;text-align:left;border:0;background:transparent;padding:13px 12px;color:#596056;font:600 11px Manrope;cursor:pointer;border-radius:5px;margin-bottom:4px}.admin-side button.active,.admin-side button:hover{background:#24382d;color:white}.admin-main{padding:34px 4% 60px;min-width:0}.admin-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.admin-heading h1{font:32px "Playfair Display";color:#24382d;margin:0}.admin-heading p{font-size:10px;color:#828378}.admin-btn{border:0;background:#24382d;color:#fff;padding:12px 16px;font:700 10px Manrope;cursor:pointer}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}.stat{background:#fff;border:1px solid #e8e3d9;padding:18px}.stat span{font-size:9px;color:#818378}.stat b{display:block;font:26px "Playfair Display";color:#24382d;margin-top:8px}.panel{background:#fff;border:1px solid #e8e3d9;padding:20px;margin-bottom:18px}.panel h2{font:21px "Playfair Display";color:#24382d;margin:0 0 17px}.admin-table{width:100%;border-collapse:collapse;font-size:10px}.admin-table th{text-align:left;color:#8b8c81;font-weight:600;background:#f7f5ef}.admin-table th,.admin-table td{padding:12px 10px;border-bottom:1px solid #eeeae2;vertical-align:middle}.admin-table td{color:#4d554b}.admin-table input,.admin-table select,.edit-form input,.edit-form select,.edit-form textarea{border:1px solid #ded9cf;padding:9px;font:10px Manrope;width:100%;background:#fff}.status{display:inline-block;padding:5px 8px;background:#f1eadb;color:#876b43;font-size:9px}.action-link{border:0;background:none;color:#9b5038;cursor:pointer;font:700 10px Manrope}.empty-note{font-size:11px;color:#888}.admin-section{display:none}.admin-section.active{display:block}.edit-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.edit-form label{font-size:10px;color:#5c6258;display:flex;flex-direction:column;gap:6px}.edit-form .wide{grid-column:1/-1}.edit-form textarea{min-height:65px}.form-actions{display:flex;gap:9px;grid-column:1/-1}.secondary-btn{background:#e9e5db;color:#344536}.notice{background:#f8f1df;padding:12px 14px;font-size:10px;color:#806b43;line-height:1.6;margin-bottom:18px}.mobile-nav{display:none}
 @media(max-width:800px){.admin-layout{grid-template-columns:1fr}.admin-side{display:flex;overflow:auto;padding:8px}.admin-side button{white-space:nowrap;width:auto;margin:0}.admin-main{padding:24px 4%}.stats{grid-template-columns:repeat(2,1fr)}.admin-heading{align-items:flex-start;gap:12px;flex-direction:column}.admin-table{min-width:720px}.table-wrap{overflow:auto}.edit-form{grid-template-columns:1fr}.edit-form .wide,.form-actions{grid-column:auto}.admin-top{padding:15px 4%}}
 </style>
@@ -48,8 +51,157 @@
 <div class="panel"><h2>Данные демонстрационного магазина</h2><p class="empty-note">Товары и заказы хранятся в localStorage браузера. Кнопка ниже удалит локальные тестовые заказы и вернёт исходный каталог.</p><button class="admin-btn secondary-btn" id="resetDemo">Сбросить демоданные</button></div>
 </section>
 </main></div>
-<script src="admin.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="cloud-images-config.js"></script>
-<script src="cloud-images.js"></script>
+
+<script>
+(async function () {
+  const OWNER_ID = '3d53560c-6307-40e0-bb3e-4bed7ebb1c77';
+  const cfg = window.ECOFERMER_SUPABASE_CONFIG || {};
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('Не удалось загрузить ' + src));
+      document.body.appendChild(script);
+    });
+  }
+
+  function showLogin(client, message) {
+    document.body.innerHTML = `
+      <div style="
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:#f3f1ea;
+        font-family:Arial,sans-serif;
+        padding:20px;
+        box-sizing:border-box;
+      ">
+        <form id="ownerLogin" style="
+          background:white;
+          padding:32px;
+          width:100%;
+          max-width:380px;
+          box-sizing:border-box;
+          border:1px solid #e8e3d9;
+        ">
+          <h2 style="color:#24382d">Экофермер</h2>
+          <p>Вход в панель владельца</p>
+
+          <label style="display:block;margin:18px 0 6px">Электронная почта</label>
+          <input name="email" type="email" required
+            style="width:100%;padding:12px;box-sizing:border-box">
+
+          <label style="display:block;margin:18px 0 6px">Пароль</label>
+          <input name="password" type="password" required
+            style="width:100%;padding:12px;box-sizing:border-box">
+
+          <button type="submit" style="
+            width:100%;
+            padding:13px;
+            margin-top:20px;
+            background:#24382d;
+            color:white;
+            border:0;
+            cursor:pointer;
+          ">Войти</button>
+
+          <p id="loginMessage" style="color:#a33;font-size:13px">
+            ${message || ''}
+          </p>
+
+          <a href="index.html" style="color:#596056">
+            ← Вернуться в магазин
+          </a>
+        </form>
+      </div>
+    `;
+
+    document.body.style.visibility = 'visible';
+
+    document.querySelector('#ownerLogin').onsubmit = async function(e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const button = form.querySelector('button');
+      const output = document.querySelector('#loginMessage');
+
+      button.disabled = true;
+      output.textContent = 'Проверяем данные...';
+
+      try {
+        const { data, error } = await client.auth.signInWithPassword({
+          email: form.elements.email.value.trim(),
+          password: form.elements.password.value
+        });
+
+        if (error) throw error;
+
+        if (data.user?.id !== OWNER_ID) {
+          await client.auth.signOut();
+          throw new Error('Доступ разрешён только владельцу магазина.');
+        }
+
+        location.reload();
+
+      } catch (err) {
+        output.textContent = err.message;
+        button.disabled = false;
+      }
+    };
+  }
+
+  try {
+    if (!cfg.url || !cfg.anonKey || !window.supabase?.createClient) {
+      throw new Error('Не удалось подключить Supabase.');
+    }
+
+    const client = window.supabase.createClient(
+      cfg.url,
+      cfg.anonKey,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true
+        }
+      }
+    );
+
+    const { data, error } = await client.auth.getSession();
+
+    if (error) throw error;
+
+    if (data.session?.user?.id === OWNER_ID) {
+      document.body.style.visibility = 'visible';
+
+      await loadScript('admin.js');
+      await loadScript('cloud-images.js');
+
+    } else {
+      showLogin(
+        client,
+        data.session
+          ? 'У этой учётной записи нет доступа к панели владельца.'
+          : ''
+      );
+    }
+
+  } catch (err) {
+    document.body.innerHTML =
+      '<div style="padding:30px;font-family:Arial">' +
+      '<h2>Ошибка проверки доступа</h2>' +
+      '<p>' + err.message + '</p>' +
+      '<a href="index.html">Вернуться в магазин</a>' +
+      '</div>';
+
+    document.body.style.visibility = 'visible';
+  }
+})();
+</script>
+</body>
+</html>
 </body></html>
