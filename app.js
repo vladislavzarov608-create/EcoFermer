@@ -68,7 +68,10 @@ function renderSpecialOffers() {
         </div>
       </article>
     `).join("");
-
+    const pageIndicator = document.getElementById("offersPage");
+    if (pageIndicator) {
+    pageIndicator.textContent = `${specialOffersPage + 1} / ${totalPages}`;
+    }
     container.querySelectorAll("[data-add]").forEach(button => {
       button.addEventListener("click", () =>
         addToCart(button.dataset.add)
@@ -88,6 +91,24 @@ function renderSpecialOffers() {
       showOffers();
     }, 5000);
   }
+}
+const prevButton = document.getElementById("offersPrev");
+const nextButton = document.getElementById("offersNext");
+
+if (prevButton) {
+  prevButton.onclick = () => {
+    specialOffersPage =
+      (specialOffersPage - 1 + totalPages) % totalPages;
+    showOffers();
+  };
+}
+
+if (nextButton) {
+  nextButton.onclick = () => {
+    specialOffersPage =
+      (specialOffersPage + 1) % totalPages;
+    showOffers();
+  };
 }
 function addToCart(id){cart[id]=(cart[id]||0)+1;saveCart();toast("Добавлено в корзину");}
 function saveCart(){localStorage.setItem("farmCart",JSON.stringify(cart));renderCart();}
