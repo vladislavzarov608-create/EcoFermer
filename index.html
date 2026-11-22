@@ -86,7 +86,19 @@
   </main>
 
   <footer class="footer"><a class="brand footer-brand" href="#"><span class="brand-mark">Ф</span><span class="brand-copy"><strong>ЭКОФЕРМЕР</strong><small>НАТУРАЛЬНЫЕ ПРОДУКТЫ ДЛЯ ВАШЕГО СТОЛА</small></span></a><span>© 2026 Экофермер</span><span>Информация и цены на сайте — демонстрационные</span></footer>
-
+<!-- Информационные окна Экофермер -->
+<div class="info-modal-overlay" id="infoModalOverlay">
+  <section class="info-modal" id="infoModal" role="dialog" aria-modal="true">
+    <button class="info-modal-close" id="infoModalClose" aria-label="Закрыть">×</button>
+    <div class="eyebrow"><span></span> ЭКОФЕРМЕР</div>
+    <h2 id="infoModalTitle"></h2>
+    <div class="info-modal-content" id="infoModalContent"></div>
+    <a href="#catalog" class="btn btn-primary" id="infoModalButton">
+      Перейти в каталог <span>→</span>
+    </a>
+  </section>
+</div>
+<!-- Конец информационных окон -->
   <div class="overlay" id="overlay"></div>
   <aside class="cart-drawer" id="cartDrawer" aria-label="Корзина">
     <div class="drawer-head"><div><small>ВАШ ВЫБОР</small><h2>Корзина <span id="drawerCount">(0)</span></h2></div><button class="close-btn" id="closeCart" aria-label="Закрыть">×</button></div>
