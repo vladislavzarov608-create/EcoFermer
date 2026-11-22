@@ -124,8 +124,17 @@ async function renderOrders() {
   });
 }
 function renderRecent(){
- const recent=orders.slice(0,5);
- $("#recentOrders").innerHTML=recent.length?`<div class="table-wrap"><table class="admin-table"><thead><tr><th>Номер</th><th>Покупатель</th><th>Сумма</th><th>Статус</th></tr></thead><tbody>${recent.map(o=>`<tr><td>${o.id}</td><td>${o.name||"—"}</td><td>${fmt(o.total)}</td><td><span class="status">${o.status||"Новый"}</span></td></tr>`).join("")}</tbody></table></div>`:'<p class="empty-note">Новых заказов пока нет.</p>';
+ const recentElement = $("#recentOrders");
+
+ if (!recentElement) {
+   return;
+ }
+
+ const recent = orders.slice(0, 5);
+
+ recentElement.innerHTML = recent.length
+   ? `<div class="table-wrap"><table class="admin-table"><thead><tr><th>Номер</th><th>Покупатель</th><th>Сумма</th><th>Статус</th></tr></thead><tbody>${recent.map(o=>`<tr><td>${o.id}</td><td>${o.name||"—"}</td><td>${fmt(o.total)}</td><td><span class="status">${o.status||"Новый"}</span></td></tr>`).join("")}</tbody></table></div>`
+   : '<p class="empty-note">Новых заказов пока нет.</p>';
 }
 function editProduct(id){
  const p=products.find(x=>String(x.id)===String(id));const f=$("#productForm");f.reset();
