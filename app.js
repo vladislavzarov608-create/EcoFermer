@@ -276,16 +276,26 @@ window.setEcofermerProductsFromCloud = function(rows) {
       beef: "ГОВЯДИНА",
       pork: "СВИНИНА",
       lamb: "БАРАНИНА",
-      poultry: "ПТИЦА"
+      poultry: "ПТИЦА",
+      sausages: "КОЛБАСНЫЕ ИЗДЕЛИЯ",
+      cheese: "СЫРЫ",
+      dairy: "МОЛОЧНАЯ ПРОДУКЦИЯ"
     })[row.category] || row.category || "",
     desc: row.description || "",
     price: Number(row.price) || 0,
+    old_price: row.old_price !== null
+      ? Number(row.old_price)
+      : null,
     unit: row.unit || "кг",
     tag: row.tag || "",
     img: row.image_url || "",
     stock: Number(row.stock) || 0,
     active: row.is_active !== false
   }));
+
+  localStorage.setItem("ecoProducts", JSON.stringify(products));
+  renderProducts();
+};
 
   renderProducts();
   renderCart();
